@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cinemapedia/presentation/providers/movies/movies_providers.dart';
 
-import 'package:cinemapedia/config/constants/environment.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -9,10 +10,46 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return  const Scaffold(
       body: Center(
-        child: Placeholder(),
+        child: _HomeView(),
       ),
+    );
+  }
+}
+
+class _HomeView extends ConsumerStatefulWidget {
+  const _HomeView();
+  
+  @override
+  _HomeViewState createState() => _HomeViewState();
+}
+
+
+class _HomeViewState extends ConsumerState<_HomeView> {
+  
+  @override
+  void initSate(){
+    super.initState();
+    ref.read(popularMoviesProvider.notifier).loadNextPage();
+  }
+  
+  
+  @override
+  Widget build(BuildContext context) {
+    
+    final popularMovies = ref.watch(popularMoviesProvider);
+    
+    return ListView.builder(
+      itemCount: popularMovies.length,
+      itemBuilder: (context, index) {
+        final movie = popularMovies[index];
+        return ListTile(
+          title: Text(movie.title),
+          subtitle: Text(movie.overview),
+          leading: Image.network(movie.posterPath),
+        );
+      },
     );
   }
 }
