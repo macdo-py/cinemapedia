@@ -1,4 +1,6 @@
 # cinemapedia
+# nota:
+# clases facilmenente extendibles pero cerradas para modificacion
 
 A new Flutter project.
 
