@@ -18,7 +18,9 @@ class MoviesDbDataSource extends MoviesDataSource {
     final movieDBResponse = MovieDbResponse.fromJson(response.data);
 
 
-    final List<Movie> movies = movieDBResponse.results.map(
+    final List<Movie> movies = movieDBResponse.results
+    .where((moviedb) => moviedb.posterPath != 'no-poster') //si no trae poster filtra la pelicula
+    .map(
       (movieDB) => MovieMapper.movieDBToEntity(movieDB)).toList();
       
       
