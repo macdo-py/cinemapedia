@@ -13,8 +13,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: _HomeView(),
-      bottomNavigationBar : CustomBottomNavigation(),
-      );
+      bottomNavigationBar: CustomBottomNavigation(),
+    );
   }
 }
 
@@ -57,7 +57,10 @@ class _HomeViewState extends ConsumerState<_HomeView> {
           movies: nowPlayingMovies,
           title: 'En Cines',
           subtitle: 'Esta semana',
-          )
+          loadNextPage: () {
+            ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+          },
+        )
       ],
     );
   }

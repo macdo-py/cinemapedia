@@ -3,7 +3,7 @@ import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
 
-class MovieHorizontalListView extends StatelessWidget {
+class MovieHorizontalListView extends StatefulWidget {
   const MovieHorizontalListView(
       {super.key,
       required this.movies,
@@ -17,21 +17,53 @@ class MovieHorizontalListView extends StatelessWidget {
   final VoidCallback? loadNextPage;
 
   @override
+  State<MovieHorizontalListView> createState() =>
+      _MovieHorizontalListViewState();
+}
+
+class _MovieHorizontalListViewState extends State<MovieHorizontalListView> {
+  final scrollController = ScrollController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    scrollController.addListener(() {
+      //TODO: implementar el scroll infinito
+      if (widget.loadNextPage == null) return;
+      if (scrollController.position.pixels + 200 >=
+          scrollController.position.maxScrollExtent) {
+        print('cargar siguientes peliculas');
+        widget.loadNextPage!();
+      }
+    });
+  }
+
+//cada vez que se crea un listener, hay que destruirlo
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 350,
       child: Column(
         children: [
-          if (title != null || subtitle != null) // || es un or
-            _Title(title: title, subtitle: subtitle),
+          if (widget.title != null || widget.subtitle != null) // || es un or
+            _Title(title: widget.title, subtitle: widget.subtitle),
           Expanded(
               child: ListView.builder(
-            itemCount: movies.length,
+            controller: scrollController,
+            itemCount: widget.movies.length,
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
               return _Slide(
-                movie: movies[index],
+                movie: widget.movies[index],
               );
             },
           ))
@@ -48,7 +80,6 @@ class _Slide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final textStyles = Theme.of(context).textTheme;
 
     return Container(
@@ -67,41 +98,50 @@ class _Slide extends StatelessWidget {
                 width: 150,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress != null)
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 50),
-                    child: const Center(
-                      child: CircularProgressIndicator() ),
-                  );
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 100, horizontal: 40),
+                      child: const Center(child: CircularProgressIndicator()),
+                    );
                   return FadeIn(child: child);
                 },
               ),
             ),
           ),
-          const SizedBox(height: 5,),
+          const SizedBox(
+            height: 5,
+          ),
           //Titulo
-         SizedBox(
-          width: 150,
-          child: Text(
-            movie.title,
-            maxLines: 2,
-            style: textStyles.titleSmall,),
+          SizedBox(
+            width: 150,
+            child: Text(
+              movie.title,
+              maxLines: 2,
+              style: textStyles.titleSmall,
+            ),
           ),
           //Rating
-          SizedBox( //es para que funcione el spacer, no funca en rows
+          SizedBox(
+            //es para que funcione el spacer, no funca en rows
             width: 150,
             child: Row(
               children: [
-                 Icon(Icons.star_half_outlined, color: Colors.yellow.shade800 ),
-                const SizedBox(width: 5,),
-                Text('${movie.voteAverage}', style: textStyles.bodyMedium?.copyWith( color: Colors.yellow.shade800 ) ),
-                const SizedBox(width: 5,),
+                Icon(Icons.star_half_outlined, color: Colors.yellow.shade800),
+                const SizedBox(
+                  width: 5,
+                ),
+                Text('${movie.voteAverage}',
+                    style: textStyles.bodyMedium
+                        ?.copyWith(color: Colors.yellow.shade800)),
+                // const SizedBox(width: 5,),
                 Spacer(),
-                 Text(HumanFormats.number(movie.popularity), style: textStyles.bodySmall,),
+                Text(
+                  HumanFormats.number(movie.popularity),
+                  style: textStyles.bodySmall,
+                ),
               ],
             ),
           ),
-        
-
         ],
       ),
     );
