@@ -33,7 +33,7 @@ class _MovieHorizontalListViewState extends State<MovieHorizontalListView> {
       if (widget.loadNextPage == null) return;
       if (scrollController.position.pixels + 200 >=
           scrollController.position.maxScrollExtent) {
-        print('cargar siguientes peliculas');
+        //print('cargar siguientes peliculas');
         widget.loadNextPage!();
       }
     });
@@ -50,7 +50,7 @@ class _MovieHorizontalListViewState extends State<MovieHorizontalListView> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 350,
+      height: 360,
       child: Column(
         children: [
           if (widget.title != null || widget.subtitle != null) // || es un or
@@ -127,14 +127,12 @@ class _Slide extends StatelessWidget {
             child: Row(
               children: [
                 Icon(Icons.star_half_outlined, color: Colors.yellow.shade800),
-                const SizedBox(
-                  width: 5,
-                ),
+                const SizedBox( width: 5,),
                 Text('${movie.voteAverage}',
                     style: textStyles.bodyMedium
                         ?.copyWith(color: Colors.yellow.shade800)),
                 // const SizedBox(width: 5,),
-                Spacer(),
+                const Spacer(),
                 Text(
                   HumanFormats.number(movie.popularity),
                   style: textStyles.bodySmall,
