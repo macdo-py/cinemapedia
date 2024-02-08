@@ -32,12 +32,16 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
     ref.read(popularMoviesProvider.notifier).loadNextPage();
+    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
+    ref.read(topratedMoviesProvider.notifier).loadNextPage();
   }
 
   @override
   Widget build(BuildContext context) {
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     final popularMovies = ref.watch(popularMoviesProvider);
+    final upcomingMovies = ref.watch(upcomingMoviesProvider);
+    final topratedMovies = ref.watch(topratedMoviesProvider);
     final sildeshowmovies = ref.watch(moviesSlideshowProvider);
 
     return CustomScrollView(
@@ -75,21 +79,21 @@ class _HomeViewState extends ConsumerState<_HomeView> {
             ),
             
             MovieHorizontalListView(
-              movies: nowPlayingMovies,
+              movies: upcomingMovies,
               title: 'Proximamente',
               subtitle: 'Este mes',
               loadNextPage: () {
-                ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                ref.read(upcomingMoviesProvider.notifier).loadNextPage();
               },
             ),
 
             
             MovieHorizontalListView(
-              movies: nowPlayingMovies,
+              movies: topratedMovies,
               title: 'Mejor Calificadas',
               //subtitle: 'Este mes',
               loadNextPage: () {
-                ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                ref.read(topratedMoviesProvider.notifier).loadNextPage();
               },
             ),
 
@@ -100,7 +104,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
         );
 
         
-      }, childCount: 10)),
+      }, childCount: 1)),
     ]);
   }
 }
