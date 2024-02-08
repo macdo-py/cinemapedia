@@ -44,22 +44,20 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     final topratedMovies = ref.watch(topratedMoviesProvider);
     final sildeshowmovies = ref.watch(moviesSlideshowProvider);
 
-    return CustomScrollView(
-      slivers: [
+    return const FullScreenLoader();
+
+    return CustomScrollView(slivers: [
       const SliverAppBar(
         floating: true,
         flexibleSpace: FlexibleSpaceBar(
           title: CustomAppBar(),
         ),
-
       ),
       SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
         return Column(
           children: [
-            
             MoviesSlideshow(movies: sildeshowmovies),
-        
             MovieHorizontalListView(
               movies: nowPlayingMovies,
               title: 'En Cines',
@@ -68,7 +66,6 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                 ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
               },
             ),
-
             MovieHorizontalListView(
               movies: popularMovies,
               title: 'Populares',
@@ -77,7 +74,6 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                 ref.read(popularMoviesProvider.notifier).loadNextPage();
               },
             ),
-            
             MovieHorizontalListView(
               movies: upcomingMovies,
               title: 'Proximamente',
@@ -86,8 +82,6 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                 ref.read(upcomingMoviesProvider.notifier).loadNextPage();
               },
             ),
-
-            
             MovieHorizontalListView(
               movies: topratedMovies,
               title: 'Mejor Calificadas',
@@ -96,14 +90,11 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                 ref.read(topratedMoviesProvider.notifier).loadNextPage();
               },
             ),
-
             SizedBox(
               height: 20,
             )
           ],
         );
-
-        
       }, childCount: 1)),
     ]);
   }
