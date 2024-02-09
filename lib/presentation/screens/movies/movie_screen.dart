@@ -1,5 +1,5 @@
-import 'package:cinemapedia/domain/entities/actor.dart';
 import 'package:flutter/material.dart';
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
@@ -190,6 +190,13 @@ class _CustomSliverAppBar extends StatelessWidget {
               child: Image.network(
                 movie.backdropPath,
                 fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress != null) {
+                    return const SizedBox();
+                  }
+                  return FadeIn(child: child);
+                
+                },
               ),
             ),
             const SizedBox.expand(
