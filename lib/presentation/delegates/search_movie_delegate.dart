@@ -47,7 +47,10 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
           return ListView.builder(
             itemCount: movies.length,
             itemBuilder: (context, index) {
-              return _MovieItem(movie: movies[index]);
+              return _MovieItem(
+                movie: movies[index],
+                onMovieSelected: close,
+                );
             },
           );
         });
@@ -56,7 +59,11 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
 class _MovieItem extends StatelessWidget {
   final Movie movie;
-  const _MovieItem({required this.movie});
+  final onMovieSelected;
+  
+  const _MovieItem({required this.movie, required this.onMovieSelected});
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -66,58 +73,61 @@ class _MovieItem extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     
     
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10 , vertical: 5),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) {
-                  return FadeIn(child: child);
-                }
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              },
-              movie.posterPath,
-              width: size.width * 0.2,
-              height: size.height * 0.1,
-              fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () => onMovieSelected(context, movie),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10 , vertical: 5),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return FadeIn(child: child);
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+                movie.posterPath,
+                width: size.width * 0.2,
+                height: size.height * 0.1,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          const SizedBox(width: 10),
-          SizedBox(
-            width: size.width * 0.6,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(movie.title, style: textStyles.titleMedium,
-                maxLines: 2,),
-                Text(movie.overview, style: textStyles.bodySmall
-                , maxLines: 3, overflow: TextOverflow.ellipsis,),
-                Row(
-                  children: [
-                    Icon(Icons.star, color: Colors.yellow.shade800, size: 15,),
-                    const SizedBox(width: 5),
-                    Text(HumanFormats.number (movie.voteAverage, 1), style: textStyles.bodySmall!.copyWith(color: Colors.yellow.shade900)),
-                  ],
-                )
-              
-              ],
+            const SizedBox(width: 10),
+            SizedBox(
+              width: size.width * 0.6,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(movie.title, style: textStyles.titleMedium,
+                  maxLines: 2,),
+                  Text(movie.overview, style: textStyles.bodySmall
+                  , maxLines: 3, overflow: TextOverflow.ellipsis,),
+                  Row(
+                    children: [
+                      Icon(Icons.star, color: Colors.yellow.shade800, size: 15,),
+                      const SizedBox(width: 5),
+                      Text(HumanFormats.number (movie.voteAverage, 1), style: textStyles.bodySmall!.copyWith(color: Colors.yellow.shade900)),
+                    ],
+                  )
+                
+                ],
+              ),
             ),
-          ),
-          const Spacer(),
-          IconButton(
-            onPressed: () {
-              print('Add to favorites');
-            },
-            icon: Icon(Icons.favorite_border, color: colors.primary),
-          )
-        ],
+            // const Spacer(),
+            // IconButton(
+            //   onPressed: () {
+            //     print('Add to favorites');
+            //   },
+            //   icon: Icon(Icons.favorite_border, color: colors.primary),
+            // )
+          ],
+        ),
+      
       ),
-    
     );
   }
 }
