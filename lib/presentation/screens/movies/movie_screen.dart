@@ -19,6 +19,7 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
     // TODO: implement initState
     super.initState();
     ref.read(movieInfoProvider.notifier).loadMovie(widget.movieId);
+    ref.read(actorByMovieProvider.notifier).loadActors(widget.movieId);
   }
 
   @override
