@@ -3,6 +3,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/domain/entities/actor.dart';
 
 class MovieScreen extends ConsumerStatefulWidget {
   static const name = 'movie-screen';
@@ -20,13 +21,13 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
     // TODO: implement initState
     super.initState();
     ref.read(movieInfoProvider.notifier).loadMovie(widget.movieId);
-    // ref.read(actorByMovieProvider.notifier).loadActors(widget.movieId);
+    ref.read(actorByMovieProvider.notifier).loadActors(widget.movieId);
   }
 
   @override
   Widget build(BuildContext context) {
     final Movie? movie = ref.watch(movieInfoProvider)[widget.movieId];
-    // final Actor? actors = ref.watch(actorByMovieProvider)[widget.movieId];
+    //  final Actor? actors = ref.watch(actorByMovieProvider)[widget.movieId];
 
     if (movie == null) {
       return const Center(
@@ -124,15 +125,16 @@ class _ActorsByMovie extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final actorsByMovie = ref.watch(actorByMovieProvider);
+
     if (actorsByMovie[movieId] == null) {
       return const Center(
         child: CircularProgressIndicator(),
       );
-
+      
     }
     final actors = actorsByMovie[movieId]!;
 
-    return  SizedBox(
+    return SizedBox(
       height: 300,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -141,28 +143,37 @@ class _ActorsByMovie extends ConsumerWidget {
           final actor = actors[index];
 
           return Container(
+            // width: 135,
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.network(
-                    actor.profilePath,
-                    fit: BoxFit.cover,
-                    width: 180,
-                    height: 130,
+                FadeIn(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(
+                      actor.profilePath,
+                      fit: BoxFit.cover,
+                      width: 180,
+                      height: 130,
+                    ),
                   ),
                 ),
-                Text(actor.name, maxLines: 2,),
-                Text(actor.character ?? '', 
-                    maxLines: 2,
-                    style: const TextStyle(fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis,),
+                Text(
+                  actor.name,
+                  maxLines: 2,
+                ),
+                Text(
+                  actor.character ?? '',
+                  maxLines: 2,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
             ),
           );
         },
-        ),
+      ),
     );
   }
 }
@@ -195,7 +206,6 @@ class _CustomSliverAppBar extends StatelessWidget {
                     return const SizedBox();
                   }
                   return FadeIn(child: child);
-                
                 },
               ),
             ),
