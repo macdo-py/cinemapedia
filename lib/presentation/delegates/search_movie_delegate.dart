@@ -40,23 +40,75 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   Widget buildSuggestions(BuildContext context) {
     return FutureBuilder(
         future: searchMovies(query),
-        
         builder: (context, snapshot) {
-        
           final movies = snapshot.data ?? [];
 
           return ListView.builder(
             itemCount: movies.length,
             itemBuilder: (context, index) {
-              final movie = movies[index];
-              return ListTile(
-                title: Text(movie.title),
-                onTap: () => close(context, movie),
-              );
+              return _MovieItem(movie: movies[index]);
             },
-            
-
           );
         });
+  }
+}
+
+class _MovieItem extends StatelessWidget {
+  final Movie movie;
+  const _MovieItem({required this.movie});
+
+  @override
+  Widget build(BuildContext context) {
+    
+    final colors = Theme.of(context).colorScheme;
+    final textStyles = Theme.of(context).textTheme;
+    final size = MediaQuery.of(context).size;
+    
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10 , vertical: 5),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.network(
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return FadeIn(child: child);
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+              movie.posterPath,
+              width: size.width * 0.2,
+              height: size.height * 0.1,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(width: 10),
+          SizedBox(
+            width: size.width * 0.6,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(movie.title, style: textStyles.titleMedium,
+                maxLines: 2,),
+                Text(movie.overview, style: textStyles.bodySmall
+                , maxLines: 3, overflow: TextOverflow.ellipsis,),
+              ],
+            ),
+          ),
+          const Spacer(),
+          IconButton(
+            onPressed: () {
+              print('Add to favorites');
+            },
+            icon: Icon(Icons.favorite_border, color: colors.primary),
+          )
+        ],
+      ),
+    
+    );
   }
 }
